@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartu Bucin untuk Naza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome untuk ikon stiker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fce7f3; /* Pink muda untuk kesan romantis */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.5s;
+        }
+        .bucin-card {
+            max-width: 400px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(219, 39, 119, 0.2); /* Shadow pink */
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            opacity: 0; /* Mulai tersembunyi untuk animasi */
+            animation: fadeIn 0.5s forwards;
+        }
+        .sticker {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #db2777; /* Warna pink gelap untuk stiker */
+            animation: stickerBounce 0.8s ease-in-out infinite alternate;
+        }
+        .text-content {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 30px;
+            animation: textFade 0.5s ease-out;
+        }
+        .next-button {
+            background-color: #db2777;
+            transition: all 0.3s;
+        }
+        .next-button:hover {
+            background-color: #c0266d;
+            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Animasi */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        @keyframes stickerBounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+        @keyframes textFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-out {
+            animation: fadeOut 0.3s forwards;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bucin-card" class="bucin-card">
+        <div class="content-wrapper">
+            <div id="sticker" class="sticker"></div>
+            <p id="message" class="text-content"></p>
+        </div>
+        <button id="next-button" onclick="goToNextStep()" class="next-button w-full text-white font-bold py-3 px-4 rounded-xl shadow-lg">
+            Baca Selanjutnya
+        </button>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const card = document.getElementById('bucin-card');
+        const messageElement = document.getElementById('message');
+        const stickerElement = document.getElementById('sticker');
+        const buttonElement = document.getElementById('next-button');
+
+        const scriptData = [
+            { text: "Hai Naza. 👋", icon: "👋" },
+            { text: "Maaf kalau aku punya salah sama kamu. 🥺", icon: "<i class='fa-solid fa-face-sad-cry'></i>", color: '#ef4444' },
+            { text: "Tapi, dari awal kamu chat aku...", icon: "<i class='fa-solid fa-mobile-screen-button'></i>" },
+            { text: "Aku merasa hidup tidak terlalu berat lagi. 💖", icon: "<i class='fa-solid fa-heart-circle-check'></i>", color: '#db2777' },
+            { text: "Semua tergantung pada hati kamu. ✨", icon: "✨" },
+            { text: "Kamu punya wajah yang bagus...", icon: "<i class='fa-solid fa-face-grin-hearts'></i>" },
+            { text: "Aku punya harapan untuk akhir tahun...", icon: "<i class='fa-solid fa-calendar-star'></i>" },
+            { text: "Aku harap kita bisa berkomunikasi terus. 💬", icon: "<i class='fa-solid fa-message'></i>", color: '#3b82f6' },
+            { text: "Terima kasih sudah membaca ini, Sayang. Semoga ini awal yang baik. 🥰", icon: "<i class='fa-solid fa-face-kiss-wink-heart'></i>", buttonText: "Selesai" },
+            { text: "Sekarang giliran kamu untuk membalas... (Aku menunggu, Naza!)", icon: "💌", buttonText: "Selesai" }
+        ];
+
+        function updateContent(step) {
+            // Hapus animasi lama sebelum menambahkan konten baru
+            messageElement.className = 'text-content fade-out';
+            stickerElement.className = 'sticker fade-out';
+            
+            setTimeout(() => {
+                const data = scriptData[step];
+
+                // Update konten
+                messageElement.innerHTML = data.text;
+                stickerElement.innerHTML = data.icon;
+                
+                // Tambahkan warna ikon kustom jika ada
+                stickerElement.style.color = data.color || '#db2777';
+
+                // Terapkan animasi masuk
+                messageElement.className = 'text-content';
+                stickerElement.className = 'sticker';
+
+                // Update tombol
+                buttonElement.textContent = data.buttonText || "Lanjut ke Kalimat Berikutnya";
+                if (data.buttonText === "Selesai") {
+                    buttonElement.classList.add('hidden');
+                }
+
+                if (step === scriptData.length - 1) {
+                    buttonElement.classList.add('hidden');
+                    messageElement.classList.add('mt-10'); // Tambah jarak di pesan akhir
+                    stickerElement.style.animation = 'none';
+                }
+            }, 300); // Tunggu animasi fadeOut selesai
+        }
+
+        function goToNextStep() {
+            if (currentStep < scriptData.length - 1) {
+                currentStep++;
+                updateContent(currentStep);
+            }
+        }
+
+        // Inisialisasi
+        window.onload = () => {
+            updateContent(0);
+            card.style.opacity = 1;
+        };
+    </script>
+
+</body>
+</html>
